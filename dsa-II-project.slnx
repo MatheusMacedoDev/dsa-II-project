@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Hashing.Tests/Hashing.Tests.csproj" />
+  <Project Path="Hashing/Hashing.csproj" />
+</Solution>
