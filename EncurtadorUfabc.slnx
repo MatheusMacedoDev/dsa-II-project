@@ -1,0 +1,9 @@
+<Solution>
+    <Project Path="src/EncurtadorUfabc.API/EncurtadorUfabc.API.csproj" />
+    <Project Path="src/EncurtadorUfabc.Core/EncurtadorUfabc.Core.csproj" />
+    <Project Path="src/EncurtadorUfabc.AVL/EncurtadorUfabc.AVL.csproj" />
+    <Project Path="src/EncurtadorUfabc.Hash/EncurtadorUfabc.Hash.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/EncurtadorUfabc.Tests/EncurtadorUfabc.Tests.csproj" />
+  </Folder>
+</Solution>
