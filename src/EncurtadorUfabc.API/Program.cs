@@ -1,0 +1,32 @@
+using EncurtadorUfabc.Core.Crosscutting;
+using EncurtadorUfabc.Core.Persistence;
+using EncurtadorUfabc.AVL;
+using EncurtadorUfabc.Core.Contracts;
+using EncurtadorUfabc.Core.Models;
+using EncurtadorUfabc.Hash;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=encurtador.db"));
+
+builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("hash", (_, _) => new HashSymbolTable<string, ShortUrl>());
+builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("avl", (_, _) => new AvlSymbolTable<string, ShortUrl>());
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseEndpoints();
+
+app.Run();
