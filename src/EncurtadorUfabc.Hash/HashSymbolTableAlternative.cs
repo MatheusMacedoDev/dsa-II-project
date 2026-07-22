@@ -1,12 +1,12 @@
-using EncurtadorUfabc.Core.Contracts;
+﻿using EncurtadorUfabc.Core.Contracts;
 
 namespace EncurtadorUfabc.Hash;
 
-public class HashSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
+public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
 {
     private readonly List<LinkedList<HashTableNode<TValue>>> _table;
 
-    public HashSymbolTable(int capacity)
+    public HashSymbolTableAlternative(int capacity)
     {
         _table = new List<LinkedList<HashTableNode<TValue>>>(capacity);
         for (var i = 0; i < _table.Capacity; i++)
