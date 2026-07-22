@@ -43,6 +43,27 @@ function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 }
 
+async function copyToClipboard(text) {
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+        showToast('Link copiado para a área de transferência.', 'success');
+    } catch (error) {
+        showToast('Não foi possível copiar o link.', 'error');
+    }
+}
+
 async function apiFetch(path, options) {
     const response = await fetch(path, options);
     let payload = null;
@@ -88,6 +109,7 @@ function renderUrls(urls) {
     const sorted = urls.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     for (const item of sorted) {
         const shortPath = '/' + state.structure + '/urls/' + item.code;
+        const shortUrl = window.location.origin + shortPath;
         const row = document.createElement('tr');
         row.innerHTML =
             '<td class="code-cell">' + escapeHtml(item.code) + '</td>' +
@@ -95,6 +117,7 @@ function renderUrls(urls) {
             '<td>' + escapeHtml(formatDate(item.createdAt)) + '</td>' +
             '<td class="num">' + Number(item.accessCount).toLocaleString('pt-BR') + '</td>' +
             '<td class="actions-col"><div class="row-actions">' +
+            '<button class="icon-btn" data-action="copy" data-url="' + escapeHtml(shortUrl) + '">Copiar</button>' +
             '<button class="icon-btn" data-action="open" data-path="' + shortPath + '">Abrir</button>' +
             '<button class="icon-btn icon-btn--danger" data-action="delete" data-code="' + escapeHtml(item.code) + '">Excluir</button>' +
             '</div></td>';
@@ -113,6 +136,7 @@ async function createUrl(event) {
         el.createResult.innerHTML =
             '<span class="chip">' + escapeHtml(result.code) + '</span>' +
             '<a class="result__link" href="' + escapeHtml(result.shortUrl) + '" target="_blank" rel="noopener">' + escapeHtml(result.shortUrl) + '</a>' +
+            '<button class="icon-btn" data-action="copy" data-url="' + escapeHtml(result.shortUrl) + '">Copiar</button>' +
             '<span class="result__meta">&rarr; ' + escapeHtml(result.originalUrl) + '</span>';
         el.originalUrl.value = '';
         showToast('URL encurtada com sucesso.', 'success');
@@ -149,6 +173,13 @@ function onTableClick(event) {
     if (!button) return;
     if (button.dataset.action === 'open') openUrl(button.dataset.path);
     if (button.dataset.action === 'delete') deleteUrl(button.dataset.code);
+    if (button.dataset.action === 'copy') copyToClipboard(button.dataset.url);
+}
+
+function onCreateResultClick(event) {
+    const button = event.target.closest('button[data-action="copy"]');
+    if (!button) return;
+    copyToClipboard(button.dataset.url);
 }
 
 async function runBenchmark(event) {
@@ -282,6 +313,7 @@ el.segButtons.forEach(btn => btn.addEventListener('click', () => setStructure(bt
 el.createForm.addEventListener('submit', createUrl);
 el.refreshBtn.addEventListener('click', loadUrls);
 el.urlsBody.addEventListener('click', onTableClick);
+el.createResult.addEventListener('click', onCreateResultClick);
 el.benchmarkForm.addEventListener('submit', runBenchmark);
 
 setStructure('avl');
