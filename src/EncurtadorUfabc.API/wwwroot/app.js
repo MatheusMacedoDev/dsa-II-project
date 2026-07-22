@@ -268,7 +268,7 @@ function drawChart(avl, hash) {
     ctx.font = '11px Inter, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    ctx.fillText('Tempo (ms) — menor é melhor', padding.left, 8);
+    ctx.fillText('Tempo (ms)', padding.left, 8);
 }
 
 function drawBar(ctx, x, value, maxValue, barWidth, padding, plotHeight, color) {

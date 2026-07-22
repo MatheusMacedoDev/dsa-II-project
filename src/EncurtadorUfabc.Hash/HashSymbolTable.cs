@@ -3,13 +3,13 @@ using EncurtadorUfabc.Core.Contracts;
 namespace EncurtadorUfabc.Hash;
 
 // Tabela de simbolos implementada como tabela de dispersao (hash table) com
-// tratamento de colisoes por ENCADEAMENTO EXTERNO (separate chaining): cada
-// posicao do vetor de baldes (buckets) referencia uma lista ligada simples de
+// tratamento de colisoes por Encadeamento EXTERNO no qual cada
+// posicao do vetor de registros referencia uma lista ligada simples de
 // entradas cujas chaves colidiram na mesma posicao apos a compressao.
 public class HashSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
 {
     // No da lista ligada de encadeamento externo. Cada balde e a cabeca de uma
-    // dessas listas; entradas que colidem no mesmo indice sao encadeadas via Next.
+    // dessas listas, entradas que colidem no mesmo indice sao encadeadas via Next.
     private sealed class HashEntry
     {
         public TKey Key;
@@ -25,8 +25,8 @@ public class HashSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TK
     }
 
     // Sequencia de tamanhos primos usada a cada redimensionamento. Tamanhos primos
-    // sao preferiveis na etapa de compressao por divisao, pois reduzem padroes de
-    // colisao quando as chaves possuem regularidade estrutural.
+    // foram escolhidos na etapa de compressao por divisao, pois reduzem padroes de
+    // colisao.
     private static readonly int[] PrimeSizes = { 7, 17, 37, 79, 163, 331, 673, 1361, 2729, 5471, 10949, 21911, 43853, 87719, 175447, 350899 };
 
     private HashEntry?[] buckets;
@@ -71,7 +71,7 @@ public class HashSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TK
     private static bool KeysAreEqual(TKey first, TKey second) => first.CompareTo(second) == 0;
 
     // Insere ou atualiza a associacao chave-valor. Se a chave ja existir na cadeia
-    // do balde, apenas o valor e substituido; caso contrario uma nova entrada e
+    // do balde, apenas o valor e substituido, caso contrario uma nova entrada e
     // inserida no inicio da lista ligada. Ao ultrapassar o fator de carga limite a
     // tabela e redimensionada e as entradas sao redistribuidas (rehashing).
     public void Put(TKey key, TValue value)
