@@ -1,4 +1,4 @@
-namespace EncurtadorUfabc.Core.Contracts;
+﻿namespace EncurtadorUfabc.Core.Models;
 
 public interface ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
 {

@@ -1,4 +1,4 @@
-using EncurtadorUfabc.Core.Crosscutting;
+﻿using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Persistence;
 using EncurtadorUfabc.Core.Contracts;
 using EncurtadorUfabc.Core.Models;

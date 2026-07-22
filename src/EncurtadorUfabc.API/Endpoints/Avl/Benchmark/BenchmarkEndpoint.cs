@@ -1,5 +1,4 @@
-using EncurtadorUfabc.Core.Contracts;
-using EncurtadorUfabc.Core.Crosscutting;
+﻿using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.AVL;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,5 @@
-using EncurtadorUfabc.AVL;
-using EncurtadorUfabc.Core.Contracts;
+﻿using EncurtadorUfabc.AVL;
+using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.Hash;
 
 namespace EncurtadorUfabc.Tests;

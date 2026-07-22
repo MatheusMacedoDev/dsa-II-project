@@ -1,3 +1,3 @@
-namespace EncurtadorUfabc.Core.Contracts;
+﻿namespace EncurtadorUfabc.Core.Models;
 
 public record CreateUrlRequest(string OriginalUrl);

@@ -1,4 +1,4 @@
-using EncurtadorUfabc.Core.Contracts;
+﻿using EncurtadorUfabc.Core.Models;
 
 namespace EncurtadorUfabc.AVL;
 
