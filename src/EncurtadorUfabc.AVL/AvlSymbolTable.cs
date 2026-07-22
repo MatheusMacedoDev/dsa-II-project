@@ -3,11 +3,9 @@ using EncurtadorUfabc.Core.Contracts;
 namespace EncurtadorUfabc.AVL;
 
 // Tabela de simbolos implementada como arvore AVL: uma arvore binaria de busca
-// (BST) auto-balanceada. A invariante de balanceamento exige que, para todo no, o
-// fator de balanceamento (altura da subarvore esquerda menos a da direita)
-// permaneca no intervalo {-1, 0, +1}. Manter essa invariante garante altura
-// logaritmica e, por consequencia, custo O(log n) nas operacoes de busca,
-// insercao e remocao.
+// auto-balanceada. A invariante de balanceamento exige que, para todo no, o
+// fator de balanceamento fique no intervalo {-1, 0, +1}. Manter essa invariante garante altura
+// logaritmica e alcançamos custo O(log n) nas operacoes de busca, insercao e remocao.
 public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
 {
     private AvlNode<TKey, TValue>? root;
@@ -21,13 +19,12 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
     // Recalcula a altura de um no a partir das alturas de seus filhos.
     private static void UpdateHeight(AvlNode<TKey, TValue> node) => node.Height = 1 + Math.Max(GetHeight(node.Left), GetHeight(node.Right));
 
-    // Fator de balanceamento: diferenca entre as alturas das subarvores esquerda e
-    // direita. Valores fora de {-1, 0, +1} indicam desequilibrio a ser corrigido.
+    // Fator de balanceamento: diferenca entre as alturas das subarvores esquerda e direita. Valores fora de {-1, 0, +1} indicam desequilibrio a ser corrigido.
+
     private static int BalanceFactor(AvlNode<TKey, TValue> node) => GetHeight(node.Left) - GetHeight(node.Right);
 
     // Rotacao simples a direita, usada para corrigir desequilibrios do lado
-    // esquerdo (caso Esquerda-Esquerda). O filho esquerdo sobe e passa a ser a raiz
-    // local da subarvore.
+    // esquerdo. O filho esquerdo sobe e passa a ser a raiz local da subarvore.
     private static AvlNode<TKey, TValue> RotateRight(AvlNode<TKey, TValue> node)
     {
         AvlNode<TKey, TValue> newRoot = node.Left!;
@@ -40,8 +37,7 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
     }
 
     // Rotacao simples a esquerda, usada para corrigir desequilibrios do lado
-    // direito (caso Direita-Direita). O filho direito sobe e passa a ser a raiz
-    // local da subarvore.
+    // direito. O filho direito sobe e passa a ser a raiz local da subarvore.
     private static AvlNode<TKey, TValue> RotateLeft(AvlNode<TKey, TValue> node)
     {
         AvlNode<TKey, TValue> newRoot = node.Right!;
@@ -53,8 +49,8 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
         return newRoot;
     }
 
-    // Rebalanceia o no apos uma insercao ou remocao, aplicando a rotacao apropriada
-    // conforme o caso de desequilibrio detectado: Esquerda-Esquerda (EE),
+    // Rebalanceia o no apos uma insercao ou remocao, aplicando a rotacao correta
+    // conforme o caso de desequilibrio que foi detectado: Esquerda-Esquerda (EE),
     // Esquerda-Direita (ED), Direita-Direita (DD) ou Direita-Esquerda (DE).
     private static AvlNode<TKey, TValue> Balance(AvlNode<TKey, TValue> node)
     {
@@ -78,9 +74,7 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
         return node;
     }
 
-    // Insere ou atualiza a associacao chave-valor. A insercao segue a regra da BST
-    // (chaves menores a esquerda, maiores a direita) e, no retorno da recursao,
-    // cada no ancestral e rebalanceado para preservar a invariante AVL.
+    // Insere ou atualiza a associacao chave-valor.
     public void Put(TKey key, TValue value) => root = Insert(root, key, value);
 
     private AvlNode<TKey, TValue> Insert(AvlNode<TKey, TValue>? node, TKey key, TValue value)
@@ -131,8 +125,8 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
         return false;
     }
 
-    // Remove a associacao da chave informada. Apos a remocao no estilo BST, os nos
-    // no caminho de volta sao rebalanceados para manter a invariante AVL.
+    // Remove a associacao da chave informada. Apos a remocao, os nos
+    // no caminho de volta sao rebalanceados para manter a AVL.
     public bool Delete(TKey key)
     {
         int previousCount = count;
@@ -160,8 +154,8 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
             if (node.Right is null)
                 return node.Left;
 
-            // No com dois filhos: substitui-se o conteudo pelo sucessor em-ordem
-            // (menor chave da subarvore direita) e remove-se esse sucessor.
+            // No com dois filhos: substitui o conteudo pelo sucessor
+            // com menor chave da subarvore direita e remove esse sucessor.
             AvlNode<TKey, TValue> successor = FindMinimum(node.Right);
             node.Key = successor.Key;
             node.Value = successor.Value;
@@ -192,7 +186,7 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
 
     public bool Contains(TKey key) => TryGet(key, out _);
 
-    // Percurso em-ordem (in-order): visita subarvore esquerda, no e subarvore
+    // Percurso em-ordem: visita subarvore esquerda, no e subarvore
     // direita, produzindo as associacoes em ordem crescente de chave.
     public IEnumerable<KeyValuePair<TKey, TValue>> Items() => TraverseInOrder(root);
 
