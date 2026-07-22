@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encurtador UFABC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <header class="app-header">
+        <div class="app-header__inner">
+            <div class="brand">
+                <div class="brand__logo">U</div>
+                <div>
+                    <h1 class="brand__title">Encurtador UFABC</h1>
+                    <p class="brand__subtitle">Visualize e teste o encurtador de URL</p>
+                </div>
+            </div>
+            <div class="structure-switch" role="tablist" aria-label="Estrutura de dados">
+                <span class="structure-switch__label">Estrutura</span>
+                <div class="segmented">
+                    <button class="segmented__btn is-active" data-structure="avl" role="tab" aria-selected="true">AVL</button>
+                    <button class="segmented__btn" data-structure="hash" role="tab" aria-selected="false">Hash</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="card">
+            <div class="card__head">
+                <h2 class="card__title">Encurtar URL</h2>
+                <p class="card__hint">Informe uma URL absoluta (http/https).</p>
+            </div>
+            <form id="create-form" class="create-form">
+                <input id="original-url" class="input" type="url" placeholder="https://exemplo.com/pagina-muito-longa"
+                    required autocomplete="off" />
+                <button id="create-btn" class="btn btn--primary" type="submit">Encurtar</button>
+            </form>
+            <div id="create-result" class="result hidden"></div>
+        </section>
+
+        <section class="card">
+            <div class="card__head card__head--row">
+                <div>
+                    <h2 class="card__title">URLs armazenadas</h2>
+                    <p class="card__hint">Estrutura ativa: <strong id="active-structure-label">AVL</strong></p>
+                </div>
+                <button id="refresh-btn" class="btn btn--ghost" type="button">Atualizar</button>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>URL original</th>
+                            <th>Criada em</th>
+                            <th class="num">Acessos</th>
+                            <th class="actions-col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="urls-body">
+                    </tbody>
+                </table>
+            </div>
+            <div id="urls-empty" class="empty hidden">Nenhuma URL armazenada nesta estrutura.</div>
+        </section>
+
+        <section class="card">
+            <div class="card__head">
+                <h2 class="card__title">Benchmark comparativo</h2>
+                <p class="card__hint">Executa Put / Get / Delete nas duas estruturas e compara os tempos.</p>
+            </div>
+            <form id="benchmark-form" class="benchmark-form">
+                <label class="field">
+                    <span class="field__label">Operações</span>
+                    <input id="benchmark-ops" class="input" type="number" min="1" max="1000000" value="10000" required />
+                </label>
+                <button id="benchmark-btn" class="btn btn--primary" type="submit">Executar benchmark</button>
+            </form>
+
+            <div id="benchmark-result" class="benchmark-result hidden">
+                <div class="benchmark-summary">
+                    <div class="metric" data-metric="avl">
+                        <span class="metric__tag metric__tag--avl">AVL</span>
+                        <span class="metric__value" id="avl-total">-</span>
+                        <span class="metric__unit">ms total</span>
+                    </div>
+                    <div class="metric" data-metric="hash">
+                        <span class="metric__tag metric__tag--hash">Hash</span>
+                        <span class="metric__value" id="hash-total">-</span>
+                        <span class="metric__unit">ms total</span>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="benchmark-chart" width="720" height="320"></canvas>
+                </div>
+                <div class="legend">
+                    <span class="legend__item"><i class="legend__dot legend__dot--avl"></i>AVL</span>
+                    <span class="legend__item"><i class="legend__dot legend__dot--hash"></i>Hash</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <span>DSA II · Encurtador de URL · AVL vs Tabela Hash</span>
+        <a href="/swagger" target="_blank" rel="noopener">Documentação da API</a>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

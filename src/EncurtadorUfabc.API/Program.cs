@@ -1,7 +1,6 @@
-using EncurtadorUfabc.Core.Crosscutting;
+﻿using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Persistence;
 using EncurtadorUfabc.AVL;
-using EncurtadorUfabc.Core.Contracts;
 using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.Hash;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +21,22 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    var hashTable = app.Services.GetRequiredKeyedService<ISymbolTable<string, ShortUrl>>("hash");
+    var avlTable = app.Services.GetRequiredKeyedService<ISymbolTable<string, ShortUrl>>("avl");
+
+    foreach (var entity in db.ShortUrls.AsNoTracking())
+    {
+        hashTable.Put(entity.Code, new ShortUrl { Code = entity.Code, OriginalUrl = entity.OriginalUrl, CreatedAt = entity.CreatedAt, AccessCount = entity.AccessCount });
+        avlTable.Put(entity.Code, new ShortUrl { Code = entity.Code, OriginalUrl = entity.OriginalUrl, CreatedAt = entity.CreatedAt, AccessCount = entity.AccessCount });
+    }
 }
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseEndpoints();
 
