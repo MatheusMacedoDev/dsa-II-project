@@ -13,7 +13,7 @@ public class ResolveUrlEndpoint : IEndpoint
         app.MapGet("/hash/urls/{code}", ResolveAsync).WithTags("Hash").WithSummary("Resolve um codigo e redireciona para a URL original (use ?raw=true para retornar JSON)").AddEndpointFilter(new LogProcessFilter("Hash.ResolveUrl"));
     }
 
-    public async Task<IResult> ResolveAsync([FromRoute] string code, [FromQuery] bool raw, [FromKeyedServices("hash")] ISymbolTable<string, ShortUrl> table, AppDbContext db, ILogger<ResolveUrlEndpoint> logger, CancellationToken ct)
+    public async Task<IResult> ResolveAsync([FromRoute] string code, [FromQuery] bool? raw, [FromKeyedServices("hash")] ISymbolTable<string, ShortUrl> table, AppDbContext db, ILogger<ResolveUrlEndpoint> logger, CancellationToken ct)
     {
         if (!table.TryGet(code, out var shortUrl))
             return Results.NotFound();
@@ -27,7 +27,7 @@ public class ResolveUrlEndpoint : IEndpoint
             await db.SaveChangesAsync(ct);
         }
 
-        if (raw)
+        if (raw == true)
             return Results.Ok(new ShortUrlResponse(shortUrl.Code, shortUrl.OriginalUrl, shortUrl.CreatedAt, shortUrl.AccessCount));
 
         return Results.Redirect(shortUrl.OriginalUrl);
