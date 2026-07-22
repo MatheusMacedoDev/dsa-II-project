@@ -10,6 +10,7 @@ A solução (`EncurtadorUfabc.slnx`) é organizada em múltiplos projetos .NET, 
 EncurtadorUfabc.slnx          # Arquivo de solução, referencia todos os projetos
 src/
   EncurtadorUfabc.API/        # Projeto Web (ASP.NET Core Minimal APIs) - ponto de entrada da aplicação
+    wwwroot/                  # Interface web estática (HTML/CSS/JS) servida na raiz da aplicação
   EncurtadorUfabc.Core/       # Contratos, modelos, persistência (EF Core) e código transversal
   EncurtadorUfabc.AVL/        # Implementação da tabela de símbolos usando Árvore AVL
   EncurtadorUfabc.Hash/       # Implementação da tabela de símbolos usando Tabela Hash
@@ -41,6 +42,22 @@ Endpoints/
 ```
 
 Cada endpoint implementa a interface `IEndpoint` (definida em `EncurtadorUfabc.Core/Crosscutting`) e é registrado automaticamente por reflection em `Program.cs`, sem necessidade de registro manual de rotas.
+
+Além dos endpoints HTTP, o projeto expõe uma interface web estática em `wwwroot/` (servida via `app.UseDefaultFiles()` + `app.UseStaticFiles()`), que consome esses mesmos endpoints:
+
+```
+wwwroot/
+  index.html    # Tela única da aplicação: formulário de criação, tabela de URLs e benchmark
+  app.js        # Consumo da API (fetch), renderização da tabela e do gráfico de benchmark
+  styles.css    # Estilos da interface
+```
+
+A tela permite:
+
+- Alternar a estrutura de dados ativa (AVL ou Hash) usando o seletor no cabeçalho.
+- Encurtar uma URL e copiar o link gerado (botão "Copiar") ou abri-lo em uma nova aba.
+- Listar, abrir, copiar o link e excluir as URLs armazenadas na estrutura selecionada.
+- Executar um benchmark comparativo (Put/Get/Delete) entre AVL e Hash, com resultado exibido em gráfico de barras.
 
 Rotas disponíveis (mesmo conjunto para `/avl` e `/hash`):
 
@@ -112,7 +129,13 @@ Projeto de testes automatizados da solução.
    - HTTP: `http://localhost:5143`
    - HTTPS: `https://localhost:7249`
 
-5. Com a aplicação em execução, acesse o Swagger para explorar e testar os endpoints:
+5. Com a aplicação em execução, acesse a interface web para testar o encurtador visualmente:
+
+   ```
+   http://localhost:5143/
+   ```
+
+6. Ou acesse o Swagger para explorar e testar os endpoints diretamente:
 
    ```
    http://localhost:5143/swagger
