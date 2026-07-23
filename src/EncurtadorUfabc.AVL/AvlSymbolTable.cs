@@ -13,6 +13,8 @@ public class AvlSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TKe
 
     public int Count => count;
 
+    public int Height => GetHeight(root);
+
     // Altura de um no, tratando a subarvore vazia (null) como altura zero.
     private static int GetHeight(AvlNode<TKey, TValue>? node) => node is null ? 0 : node.Height;
 
