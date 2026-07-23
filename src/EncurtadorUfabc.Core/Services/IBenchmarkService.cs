@@ -4,5 +4,10 @@ namespace EncurtadorUfabc.Core.Services;
 
 public interface IBenchmarkService
 {
-    BenchmarkResponse Run(ISymbolTable<string, string> table, int operations, string structure, Func<StructureSnapshot> snapshotFactory);
+    BenchmarkResponse Run(
+        Func<ISymbolTable<string, string>> tableFactory,
+        int operations,
+        string structure,
+        Func<ISymbolTable<string, string>, StructureSnapshot> snapshotFactory
+    );
 }

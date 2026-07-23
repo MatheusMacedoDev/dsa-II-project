@@ -25,9 +25,11 @@ public class BenchmarkEndpoint : IEndpoint
         if (operations <= 0)
             return Task.FromResult(Results.BadRequest("O numero de operacoes deve ser maior que zero."));
 
-        var table = new HashSymbolTable<string, string>();
-        var response = _benchmark.Run(table, operations, "Hash",
-            () => new StructureSnapshot(table.Count, null, table.BucketCount, table.LoadFactor, table.MaxChainLength));
+        var response = _benchmark.Run(
+            () => new HashSymbolTable<string, string>(),
+            operations,
+            "Hash",
+            table => new StructureSnapshot(table.Count, null, ((HashSymbolTable<string, string>)table).BucketCount, ((HashSymbolTable<string, string>)table).LoadFactor, ((HashSymbolTable<string, string>)table).MaxChainLength));
         return Task.FromResult(Results.Ok(response));
     }
 }
