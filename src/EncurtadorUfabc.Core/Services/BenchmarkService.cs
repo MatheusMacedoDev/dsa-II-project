@@ -5,16 +5,20 @@ namespace EncurtadorUfabc.Core.Services;
 
 public class BenchmarkService : IBenchmarkService
 {
-    public BenchmarkResponse Run(ISymbolTable<string, string> table, int operations, string structure)
+    public BenchmarkResponse Run(ISymbolTable<string, string> table, int operations, string structure, Func<StructureSnapshot> snapshotFactory)
     {
         var keys = new string[operations];
         for (int index = 0; index < operations; index++)
             keys[index] = $"benchmark-key-{index}";
 
+        var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+
         var putWatch = Stopwatch.StartNew();
         for (int index = 0; index < operations; index++)
             table.Put(keys[index], keys[index]);
         putWatch.Stop();
+
+        var snapshot = snapshotFactory();
 
         var getWatch = Stopwatch.StartNew();
         for (int index = 0; index < operations; index++)
@@ -26,17 +30,22 @@ public class BenchmarkService : IBenchmarkService
             table.Delete(keys[index]);
         deleteWatch.Stop();
 
-        var totalMs = putWatch.Elapsed.TotalMilliseconds
-            + getWatch.Elapsed.TotalMilliseconds
-            + deleteWatch.Elapsed.TotalMilliseconds;
+        var allocatedAfter = GC.GetAllocatedBytesForCurrentThread();
+        var totalMs = putWatch.Elapsed.TotalMilliseconds + getWatch.Elapsed.TotalMilliseconds + deleteWatch.Elapsed.TotalMilliseconds;
 
         return new BenchmarkResponse(
             structure,
             operations,
+            snapshot.ElementCount,
             putWatch.Elapsed.TotalMilliseconds,
             getWatch.Elapsed.TotalMilliseconds,
             deleteWatch.Elapsed.TotalMilliseconds,
-            totalMs
+            totalMs,
+            allocatedAfter - allocatedBefore,
+            snapshot.TreeHeight,
+            snapshot.BucketCount,
+            snapshot.LoadFactor,
+            snapshot.MaxChainLength
         );
     }
 }

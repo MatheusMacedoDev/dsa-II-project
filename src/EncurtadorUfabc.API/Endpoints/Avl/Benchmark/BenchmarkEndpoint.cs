@@ -26,7 +26,8 @@ public class BenchmarkEndpoint : IEndpoint
             return Task.FromResult(Results.BadRequest("O numero de operacoes deve ser maior que zero."));
 
         var table = new AvlSymbolTable<string, string>();
-        var response = _benchmark.Run(table, operations, "AVL");
+        var response = _benchmark.Run(table, operations, "AVL",
+            () => new StructureSnapshot(table.Count, table.Height, null, null, null));
         return Task.FromResult(Results.Ok(response));
     }
 }

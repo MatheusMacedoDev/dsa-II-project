@@ -43,6 +43,27 @@ public class HashSymbolTable<TKey, TValue> : ISymbolTable<TKey, TValue> where TK
 
     public int Count => count;
 
+    public int BucketCount => buckets.Length;
+
+    public double LoadFactor => CurrentLoadFactor();
+
+    public int MaxChainLength
+    {
+        get
+        {
+            int max = 0;
+            for (int index = 0; index < buckets.Length; index++)
+            {
+                int length = 0;
+                for (var entry = buckets[index]; entry is not null; entry = entry.Next)
+                    length++;
+                if (length > max)
+                    max = length;
+            }
+            return max;
+        }
+    }
+
     // Etapa 1 da funcao de dispersao: transforma a chave em um numero inteiro
     // (codigo de dispersao). Para chaves do tipo string calcula-se um hash
     // polinomial pela regra de Horner (base 31), percorrendo os caracteres pelo

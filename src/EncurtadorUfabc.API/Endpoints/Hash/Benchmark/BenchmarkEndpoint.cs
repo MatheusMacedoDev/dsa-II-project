@@ -1,4 +1,5 @@
 ﻿using EncurtadorUfabc.Core.Crosscutting;
+using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.Core.Services;
 using EncurtadorUfabc.Hash;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,8 @@ public class BenchmarkEndpoint : IEndpoint
             return Task.FromResult(Results.BadRequest("O numero de operacoes deve ser maior que zero."));
 
         var table = new HashSymbolTable<string, string>();
-        var response = _benchmark.Run(table, operations, "Hash");
+        var response = _benchmark.Run(table, operations, "Hash",
+            () => new StructureSnapshot(table.Count, null, table.BucketCount, table.LoadFactor, table.MaxChainLength));
         return Task.FromResult(Results.Ok(response));
     }
 }
