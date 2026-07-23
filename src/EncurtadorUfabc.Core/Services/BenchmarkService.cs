@@ -9,7 +9,7 @@ public class BenchmarkService : IBenchmarkService
     {
         var keys = new string[operations];
         for (int index = 0; index < operations; index++)
-            keys[index] = $"benchmark-key-{index}";
+            keys[index] = CodeGenerator.Generate();
 
         var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
 

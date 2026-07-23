@@ -1,15 +1,13 @@
-﻿using EncurtadorUfabc.Core.Crosscutting;
+﻿using EncurtadorUfabc.Core;
+using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Persistence;
 using EncurtadorUfabc.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
 
 namespace EncurtadorUfabc.API.Endpoints.Avl.CreateUrl;
 
 public class CreateUrlEndpoint : IEndpoint
 {
-    private const string CodeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private const int CodeLength = 7;
 
     public void Map(IEndpointRouteBuilder app)
     {
@@ -39,17 +37,9 @@ public class CreateUrlEndpoint : IEndpoint
         string code;
         do
         {
-            code = GenerateCode();
+            code = CodeGenerator.Generate();
         }
         while (table.Contains(code));
         return code;
-    }
-
-    private static string GenerateCode()
-    {
-        var characters = new char[CodeLength];
-        for (int index = 0; index < CodeLength; index++)
-            characters[index] = CodeAlphabet[RandomNumberGenerator.GetInt32(CodeAlphabet.Length)];
-        return new string(characters);
     }
 }
