@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=encurtador.db"));
 
-builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("hash", (_, _) => new HashSymbolTable<string, ShortUrl>());
+builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("hash", (_, _) => new HashSymbolTableAlternative<string, ShortUrl>(163));
 builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("avl", (_, _) => new AvlSymbolTable<string, ShortUrl>());
 
 builder.Services.AddEndpointsApiExplorer();

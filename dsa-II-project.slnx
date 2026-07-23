@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/EncurtadorUfabc.Hashing/EncurtadorUfabc.Hashing.csproj" />
-  <Project Path="src/EncurtadorUfabc.Hashing.Tests/EncurtadorUfabc.Hashing.Tests.csproj" />
-</Solution>

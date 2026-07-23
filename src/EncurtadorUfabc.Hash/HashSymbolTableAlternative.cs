@@ -1,16 +1,16 @@
-﻿using EncurtadorUfabc.Core.Contracts;
+﻿using EncurtadorUfabc.Core.Models;
 
 namespace EncurtadorUfabc.Hash;
 
 public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValue> where TKey : IComparable<TKey>
 {
-    private readonly List<LinkedList<HashTableNode<TValue>>> _table;
+    private readonly List<LinkedList<KeyValuePair<TKey, TValue>>> _table;
 
     public HashSymbolTableAlternative(int capacity)
     {
-        _table = new List<LinkedList<HashTableNode<TValue>>>(capacity);
+        _table = new List<LinkedList<KeyValuePair<TKey, TValue>>>(capacity);
         for (var i = 0; i < _table.Capacity; i++)
-            _table.Add(new LinkedList<HashTableNode<TValue>>());
+            _table.Add(new LinkedList<KeyValuePair<TKey, TValue>>());
     }
 
     public int Count
@@ -27,11 +27,11 @@ public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValu
     public void Put(TKey key, TValue value)
     {
         var list = LinkedListFor(key);
-        if (list.Any(n => n.key == (int)(object)key))
+        if (list.Any(n => n.Key.Equals(key)))
         {
             throw new InvalidOperationException("Key already exists");
         }
-        var node = new HashTableNode<TValue>((int)(object)key, value);
+        var node = new KeyValuePair<TKey, TValue>(key, value);
         list.AddLast(node);
     }
 
@@ -40,9 +40,9 @@ public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValu
         var list = LinkedListFor(key);
         foreach (var node in list)
         {
-            if (node.key == (int)(object)key)
+            if (node.Key.Equals(key))
             {
-                value = node.value;
+                value = node.Value;
                 return true;
             }
         }
@@ -53,16 +53,22 @@ public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValu
     public bool Delete(TKey key)
     {
         var list = LinkedListFor(key);
-        var node = list.FirstOrDefault(n => n.key == key);
-        if (node == null) return false;
-        list.Remove(node);
-        return true;
+        try
+        {
+            var node = list.Single(n => n.Key.Equals(key));
+            list.Remove(node);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public bool Contains(TKey key)
     {
         var list = LinkedListFor(key);
-        return list.Any(n => n.key == key);
+        return list.Any(n => n.Key.Equals(key));
     }
 
     public IEnumerable<KeyValuePair<TKey, TValue>> Items()
@@ -70,11 +76,11 @@ public class HashSymbolTableAlternative<TKey, TValue> : ISymbolTable<TKey, TValu
         foreach (var list in _table)
         {
             foreach (var node in list)
-                yield return new KeyValuePair<TKey, TValue>(node.key, node.value);
+                yield return node;
         }
     }
 
-    private LinkedList<HashTableNode<TValue>> LinkedListFor(TKey key)
+    private LinkedList<KeyValuePair<TKey, TValue>> LinkedListFor(TKey key)
     {
         var hash = EqualityComparer<TKey>.Default.GetHashCode(key);
         var position = Math.Abs(hash % _table.Capacity);
