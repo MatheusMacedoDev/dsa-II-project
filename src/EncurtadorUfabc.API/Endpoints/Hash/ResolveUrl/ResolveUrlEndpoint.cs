@@ -19,7 +19,7 @@ public class ResolveUrlEndpoint : IEndpoint
 
         shortUrl.AccessCount++;
 
-        var entity = await db.ShortUrls.FindAsync(new object?[] { code }, ct);
+        var entity = await db.ShortUrls.FindAsync([code], ct);
         if (entity is not null)
         {
             entity.AccessCount = shortUrl.AccessCount;

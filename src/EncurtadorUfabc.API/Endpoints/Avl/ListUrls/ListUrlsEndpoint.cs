@@ -1,7 +1,6 @@
 ﻿using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Persistence;
 using EncurtadorUfabc.Core.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace EncurtadorUfabc.API.Endpoints.Avl.ListUrls;
 
