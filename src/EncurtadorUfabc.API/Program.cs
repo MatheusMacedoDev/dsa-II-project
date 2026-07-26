@@ -1,11 +1,14 @@
 ﻿using EncurtadorUfabc.Core.Crosscutting;
 using EncurtadorUfabc.Core.Persistence;
+using EncurtadorUfabc.Core.Services;
 using EncurtadorUfabc.AVL;
 using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.Hash;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IBenchmarkService, BenchmarkService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=encurtador.db"));
 
