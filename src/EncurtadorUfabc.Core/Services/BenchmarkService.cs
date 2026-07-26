@@ -44,15 +44,19 @@ public class BenchmarkService : IBenchmarkService
         deleteWatch.Stop();
 
         var allocatedAfter = GC.GetAllocatedBytesForCurrentThread();
-        var totalMs = putWatch.Elapsed.TotalMilliseconds + getWatch.Elapsed.TotalMilliseconds + deleteWatch.Elapsed.TotalMilliseconds;
+
+        var putMs = Math.Round(putWatch.Elapsed.TotalMilliseconds, 4);
+        var getMs = Math.Round(getWatch.Elapsed.TotalMilliseconds, 4);
+        var deleteMs = Math.Round(deleteWatch.Elapsed.TotalMilliseconds, 4);
+        var totalMs = Math.Round(putMs + getMs + deleteMs, 4);
 
         return new BenchmarkResponse(
             structure,
             operations,
             snapshot.ElementCount,
-            putWatch.Elapsed.TotalMilliseconds,
-            getWatch.Elapsed.TotalMilliseconds,
-            deleteWatch.Elapsed.TotalMilliseconds,
+            putMs,
+            getMs,
+            deleteMs,
             totalMs,
             allocatedAfter - allocatedBefore,
             snapshot.TreeHeight,

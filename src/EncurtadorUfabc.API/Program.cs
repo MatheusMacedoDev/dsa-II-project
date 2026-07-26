@@ -5,6 +5,7 @@ using EncurtadorUfabc.AVL;
 using EncurtadorUfabc.Core.Models;
 using EncurtadorUfabc.Hash;
 using Microsoft.EntityFrameworkCore;
+using EncurtadorUfabc.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,11 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder
 
 builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("hash", (_, _) => new HashSymbolTable<string, ShortUrl>());
 builder.Services.AddKeyedSingleton<ISymbolTable<string, ShortUrl>>("avl", (_, _) => new AvlSymbolTable<string, ShortUrl>());
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new DoubleConverter());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
